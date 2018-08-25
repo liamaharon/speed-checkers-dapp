@@ -27,9 +27,12 @@ contract QuickCheckers {
         address red;
         uint wager;
         SquareState[8][8] board;
+        bool blackWithdrawnDuringEmergency;
+        bool redWithdrawnDuringEmergency;
     }
     
     address public owner;
+    bool emergencyStop;
     Game[] public gameList;
 
     // Modifers for possible game states
@@ -46,20 +49,38 @@ contract QuickCheckers {
         _;
     }
 
-    // Modifer to check if an address was the winner of the specified game
-    modifier isWinner(address addr, uint gameIndex) {
-        require(gameList[gameIndex].winner == addr, "This address didn't win, therefore cannot claim any funds");
+    // Modifer to check if the sender was the winner of the specified game
+    modifier isWinner(uint gameIndex) {
+        require(gameList[gameIndex].winner == msg.sender, "This address didn't win, therefore cannot claim any funds");
         _;
     }
 
-    // Modifier to check if an address is allowed to make a move in the specified game
-    modifier allowedToMove(address addr, uint gameIndex) {
+    // Modifier to check if msg.sender is contract creator
+    modifier isOwner() {
+        require(msg.sender == owner, "Must be contract owner");
+        _;
+    }
+
+    // Modifier to check that there hasn't been an emergency stop
+    modifier isNoEmergency() {
+        require(emergencyStop == false, "There has been an emergency stop");
+        _;
+    }
+
+    // Modifier to check that there has been an emergency stop
+    modifier isEmergency() {
+        require(emergencyStop, "There is no emergency stop");
+        _;
+    }
+
+    // Modifier to check if msg.sender is allowed to make a move in the specified game
+    modifier allowedToMove(uint gameIndex) {
         Game storage game = gameList[gameIndex];
         // Check msg.sender is currently allowed to make a move in the game specified
         require(game.state == GameState.Underway, "Game isn't underway");
-        if (addr == game.red) {
+        if (msg.sender == game.red) {
             require(game.turn == PlayerColor.Red, "It's not your turn");
-        } else if (addr == game.black) {
+        } else if (msg.sender == game.black) {
             require(game.turn == PlayerColor.Black, "It's not your turn");
         } else {
             revert("You're not a player in this game");
@@ -81,6 +102,7 @@ contract QuickCheckers {
     function newGame() 
         public 
         payable 
+        isNoEmergency
     {
         Game memory game = Game({
             turn: PlayerColor.Black,
@@ -89,7 +111,9 @@ contract QuickCheckers {
             black: msg.sender,
             red: 0,
             wager: msg.value,
-            board: newBoard()
+            board: newBoard(),
+            blackWithdrawnDuringEmergency: false,
+            redWithdrawnDuringEmergency: false
         });
         gameList.push(game);
         emit NewGame(gameList.length - 1);
@@ -101,6 +125,7 @@ contract QuickCheckers {
     function joinGame(uint gameIndex) 
         public
         payable
+        isNoEmergency
         isWaitingForPlayer(gameIndex)
     {
         Game storage game = gameList[gameIndex];
@@ -119,8 +144,9 @@ contract QuickCheckers {
       */
     function makeMove(uint gameIndex, uint8 pieceX, uint8 pieceY, uint8 destX, uint8 destY) 
         public
+        isNoEmergency
         isUnderway(gameIndex)
-        allowedToMove(msg.sender, gameIndex)
+        allowedToMove(gameIndex)
     {
         PlayerColor playerColor = gameList[gameIndex].red == msg.sender ? PlayerColor.Red : PlayerColor.Black;
         Game storage game = gameList[gameIndex];
@@ -149,11 +175,48 @@ contract QuickCheckers {
     function withdraw(uint gameIndex)
         public
         payable
+        isNoEmergency
         isPendingWithdrawal(gameIndex) 
-        isWinner(msg.sender, gameIndex)
+        isWinner(gameIndex)
     {
         gameList[gameIndex].state = GameState.Finished;
-        msg.sender.transfer(gameList[gameIndex].wager);
+        msg.sender.transfer(gameList[gameIndex].wager * 2);
+    }
+
+
+    /** @dev Activates an emergency stop of all contract logic except emergencyWithdrawal 
+      * @param gameIndex Index of the game sender is attempting to claim winnings
+      */
+    function activateEmergencyStop()
+        public
+        isOwner
+    {
+        emergencyStop = true;
+    }
+
+    /** @dev Allows users to recover funds in event of an emergency stop
+      * @param gameIndex Index of the game sender is attempting to claim emergency withdrawal
+      */
+    function emergencyWithdrawal(uint gameIndex)
+        public
+        isEmergency
+    {
+        Game storage game = gameList[gameIndex];
+        if (msg.sender == game.red) {
+            if (game.redWithdrawnDuringEmergency) {
+                revert("You have already withdrawn");
+            }
+            game.redWithdrawnDuringEmergency = true;
+            msg.sender.transfer(game.wager);
+        } else if (msg.sender == game.black) {
+            if (game.blackWithdrawnDuringEmergency) {
+                revert("You have already withdrawn");
+            }
+            game.blackWithdrawnDuringEmergency = true;
+            msg.sender.transfer(game.wager);
+        } else {
+            revert("You were not part of this game");
+        }
     }
 
     /** @dev Enforces that a move is valid, and finds a dead piece if any
