@@ -4,8 +4,6 @@ pragma solidity ^0.4.24;
 contract QuickCheckers {
     enum PlayerColor { Red, Black }
 
-    enum MoveType { Passive, Aggressive }
-
     enum GameState {
         WaitingForPlayer,
         Underway,
@@ -185,7 +183,6 @@ contract QuickCheckers {
 
 
     /** @dev Activates an emergency stop of all contract logic except emergencyWithdrawal 
-      * @param gameIndex Index of the game sender is attempting to claim winnings
       */
     function activateEmergencyStop()
         public
@@ -310,7 +307,10 @@ contract QuickCheckers {
         return board;
     }
 
-    function getGameListLen() public view returns(uint) {
+    /** @dev Returns the length of gameList 
+      * @return The length of gameList
+      */
+    function gameListLen() public view returns(uint) {
         return gameList.length;        
     }
 }
