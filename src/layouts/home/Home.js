@@ -145,6 +145,14 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
                 />
               ))
             }
+            {
+              yourGames.length === 0
+              && (
+              <Typography variant="headline">
+                {"You aren't in any games"}
+              </Typography>
+              )
+            }
           </BodyCol>
           <BodyCol>
             <Typography variant="display1">
@@ -176,6 +184,14 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
                   playerAddress={accounts[0]}
                 />
               ))
+            }
+            {
+              waitingForPlayer.length === 0
+              && (
+              <Typography variant="headline">
+                {'There are no games open to join, consider creating one'}
+              </Typography>
+              )
             }
           </BodyCol>
         </Body>
