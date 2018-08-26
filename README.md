@@ -20,7 +20,7 @@ If you're not already familiar with the rules of checkers, don't worry they're v
 ## Run locally
 
 ### Requirements
-- nodejs (>= v6)
+- nodejs (v8.0.0 or above)
 - npm
 - truffle
 - ganache-cli
