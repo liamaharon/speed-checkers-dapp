@@ -164,11 +164,18 @@ class Game extends React.Component {
             <Row>
               <Typography style={{ marginRight: '0.5rem' }} variant="title">{'Status: '}</Typography>
               {
-                turn === playerColor
+                state === 'Underway' && (turn === playerColor
                   ? <Typography style={{ color: 'green' }} variant="title">Your move</Typography>
-                  : <Typography style={{ color: 'orange' }} variant="title">{'Waiting for opponent\'s move'}</Typography>
-
+                  : <Typography style={{ color: 'orange' }} variant="title">{'Opponent\'s move'}</Typography>)
               }
+              {
+                state !== 'Underway' && (winner === playerAddress
+                  ? <Typography style={{ color: 'green' }} variant="title">You won!</Typography>
+                  : <Typography style={{ color: 'orange' }} variant="title">You lost</Typography>)
+              }
+            </Row>
+            <Row>
+              <Typography variant="title">{`You are ${playerColor.toLowerCase()}`}</Typography>
             </Row>
             <Row>
               <Typography variant="subheading">{`Opponent: ${playerColor === 'Red' ? black : red}`}</Typography>
@@ -217,6 +224,9 @@ class Game extends React.Component {
               </TableBody>
             </Table>
             <Row>
+              {
+                state === 'Underway'
+              && (
               <Col style={{ marginTop: '1rem' }}>
                 <Typography variant="headline">
                   Make a move
@@ -266,6 +276,7 @@ class Game extends React.Component {
                   </Button>
                 </Row>
               </Col>
+              )}
               <Col style={{ marginLeft: 'auto', marginTop: '1rem' }}>
                 <Typography variant="headline">
                   Claim winnings
@@ -275,7 +286,7 @@ class Game extends React.Component {
                   variant="contained"
                   style={{ flex: '1' }}
                   color="secondary"
-                  disabled={winner !== playerAddress}
+                  disabled={winner !== playerAddress || state !== 'PendingWithdrawal'}
                 >
                     $$$$$$
                 </Button>
