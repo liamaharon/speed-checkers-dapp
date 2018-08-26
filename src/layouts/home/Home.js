@@ -28,7 +28,13 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
   }
 
   componentWillUpdate(nextProps) {
-    const { QuickCheckers } = this.props;
+    const { QuickCheckers, accounts } = this.props;
+    // on account change reload the page to enforce metamask will use the
+    // correct acc to sign txns
+    if (accounts[0] !== nextProps.accounts[0]) {
+      window.location.reload(); // eslint-disable-line no-undef
+    }
+
     // as soon as we get the game list length, request the game and board info
     // save keys to access this info from props in state
     // console.log(QuickCheckers);
@@ -45,12 +51,12 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
         10,
       );
       const newGames = [];
-      for (let i = 0; i < gameListLen; i += 1) {
+      for (let i = gameListLen - 1; i >= 0; i -= 1) {
         const curGameKey = this.QuickCheckers.methods.gameList.cacheCall(i);
         const curBoardKey = this.QuickCheckers.methods.getGameBoard.cacheCall(i);
-        newGames.push({ gameKey: curGameKey, boardKey: curBoardKey });
+        newGames.push({ gameKey: curGameKey, boardKey: curBoardKey, index: i });
       }
-      this.setState({ games: newGames.reverse() }); // eslint-disable-line
+      this.setState({ games: newGames }); // eslint-disable-line
     }
   }
 
@@ -81,16 +87,16 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
 
     const waitingForPlayer = [];
     const yourGames = [];
-    games.forEach((game, i) => {
-      const { gameKey, boardKey } = game;
+    games.forEach((game) => {
+      const { gameKey, boardKey, index } = game;
       if (!QuickCheckers.gameList[gameKey] || !QuickCheckers.getGameBoard[boardKey]) return;
       const gameVal = QuickCheckers.gameList[gameKey].value;
       const boardVal = QuickCheckers.getGameBoard[boardKey].value;
-      const parsedGame = parseGame(gameVal, boardVal);
+      const parsedGame = parseGame(gameVal, boardVal, index);
       if (parsedGame.state === 'WaitingForPlayer') {
-        waitingForPlayer.push({ i, ...parsedGame });
+        waitingForPlayer.push({ ...parsedGame });
       } else if (parsedGame.red === accounts[0] || parsedGame.black === accounts[0]) {
-        yourGames.push({ i, ...parsedGame });
+        yourGames.push({ ...parsedGame });
       }
     });
     return (
@@ -128,12 +134,12 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
               ))
             }
           </BodyCol>
-          <BodyCol style={{ maxWidth: '30rem' }}>
+          <BodyCol>
             <Typography variant="display1">
               Games awaiting players
             </Typography>
-            <Row style={{ marginTop: '1rem' }}>
-              <FormControl>
+            <Row style={{ marginTop: '1rem', justifyContent: 'space-between' }}>
+              <FormControl style={{ flex: '1' }}>
                 <InputLabel htmlFor="wager">Wager (Ether)</InputLabel>
                 <Input
                   type="number"
@@ -153,7 +159,7 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
             {
               waitingForPlayer.map(game => (
                 <Game
-                  joinGame={() => this.joinGame(game.i, game.wager)}
+                  joinGame={() => this.joinGame(game.index, game.wager)}
                   key={uuid()}
                   {...game}
                   playerAddress={accounts[0]}

@@ -38,6 +38,9 @@ const Game = (props) => {
               <Typography variant="title">{`State: ${state}`}</Typography>
             </Row>
             <Row>
+              <Typography variant="subheading">{`Creator: ${black}`}</Typography>
+            </Row>
+            <Row>
               <Typography variant="subheading">{`Wager: ${weiToEther(wager)} ETH`}</Typography>
             </Row>
             <Button

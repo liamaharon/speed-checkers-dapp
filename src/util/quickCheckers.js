@@ -35,7 +35,7 @@ export const parseBoard = (board) => {
   return parsedBoard;
 };
 
-export const parseGame = (game, board) => {
+export const parseGame = (game, board, index) => {
   const parsedGame = { ...game };
   delete parsedGame['0'];
   delete parsedGame['1'];
@@ -48,5 +48,6 @@ export const parseGame = (game, board) => {
   parsedGame.state = gameStateMapping(game.state);
   parsedGame.turn = playerColorMapping(game.turn);
   parsedGame.board = parseBoard(board);
+  parsedGame.index = index;
   return parsedGame;
 };

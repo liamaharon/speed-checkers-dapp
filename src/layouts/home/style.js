@@ -5,16 +5,18 @@ export const OuterWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  margin: 2rem;
+  margin: 2rem 10rem;
 `;
 
 export const Body = styled.div`
   display: flex;
+  flex: 1;
   justify-content: space-between;
 `;
 
 export const BodyCol = styled.div`
   display: flex;
+  max-width: 30rem;
   flex: 1;
   margin: 1rem;
   flex-direction: column;
