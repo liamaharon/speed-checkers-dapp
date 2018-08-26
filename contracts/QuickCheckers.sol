@@ -93,11 +93,6 @@ contract QuickCheckers {
         _;
     }
 
-    event NewGame(uint);
-    event GameStarted(uint);
-    event MoveMade(uint);
-    event GameEnded(uint);
-
     constructor() public {
         owner = msg.sender;
     }
@@ -121,7 +116,6 @@ contract QuickCheckers {
             redWithdrawnDuringEmergency: false
         });
         gameList.push(game);
-        emit NewGame(gameList.length - 1);
     }
 
     /** @dev Allows users to join a game, sets the game's status to underway
@@ -138,7 +132,6 @@ contract QuickCheckers {
         require(msg.value == game.wager, "Eth sent must match wager exactly");
         game.red = msg.sender;
         game.state = GameState.Underway;
-        emit GameStarted(gameIndex);
     }
 
     /** @dev Makes a move in a game, kills 
