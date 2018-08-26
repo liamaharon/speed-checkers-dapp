@@ -320,8 +320,8 @@ contract SpeedCheckers is Ownable {
         return gameList.length;        
     }
 
-    /** @dev Returns the length of gameList 
-      * @return The length of gameList
+    /** @dev Returns a flat copy of the game board, able to be returned to the UI
+      * @return Flat copy of the game board
       */
     function getGameBoard(uint gameIndex) public view returns(SquareState[64]) {
         SquareState[8][8] storage board = gameList[gameIndex].board;
