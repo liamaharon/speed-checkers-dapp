@@ -59,4 +59,4 @@ Visit `localhost:3000` and configure Metamask to read from `localhost:8545`
 
 ### Run tests
 
-`npm run test`
+`truffle test`
