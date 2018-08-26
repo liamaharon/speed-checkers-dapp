@@ -16,7 +16,7 @@ export const Body = styled.div`
 
 export const BodyCol = styled.div`
   display: flex;
-  max-width: 30rem;
+  max-width: 32rem;
   flex: 1;
   margin: 1rem;
   flex-direction: column;

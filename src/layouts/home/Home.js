@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import uuid from 'uuid/v4';
 // import { ContractData } from 'drizzle-react-components';
 import Typography from '@material-ui/core/Typography';
 import {
@@ -25,6 +24,7 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
     this.joinGame = this.joinGame.bind(this);
     this.stop = this.stop.bind(this);
     this.changeWager = this.changeWager.bind(this);
+    this.makeMove = this.makeMove.bind(this);
   }
 
   componentWillUpdate(nextProps) {
@@ -67,6 +67,10 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
 
   joinGame(i, wager) {
     this.QuickCheckers.methods.joinGame(i).send({ value: wager });
+  }
+
+  makeMove(i, fromX, fromY, destX, destY) {
+    this.QuickCheckers.methods.makeMove(i, fromX, fromY, destX, destY).send();
   }
 
   stop() {
@@ -127,7 +131,15 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
             {
               yourGames.map(game => (
                 <Game
-                  key={uuid()}
+                  key={game.index}
+                  makeMove={
+                    (fromX, fromY, destX, destY) => this.makeMove(
+                      game.index,
+                      fromX,
+                      fromY,
+                      destX,
+                      destY,
+                    )}
                   {...game}
                   playerAddress={accounts[0]}
                 />
@@ -150,7 +162,6 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
               </FormControl>
               <Button
                 variant="contained"
-                color="primary"
                 onClick={this.newGame}
               >
               + Create game
@@ -160,7 +171,7 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
               waitingForPlayer.map(game => (
                 <Game
                   joinGame={() => this.joinGame(game.index, game.wager)}
-                  key={uuid()}
+                  key={game.index}
                   {...game}
                   playerAddress={accounts[0]}
                 />
