@@ -19,6 +19,14 @@ If you're not already familiar with the rules of checkers, don't worry they're v
 
 ## Run locally
 
+### Requirements
+- nodejs (>= v6)
+- npm
+- truffle
+- ganache-cli
+- A C++ compiler
+- Python 2
+
 ### Clone the repo
 
 `git clone git@github.com:liamaharon/speed-checkers-dapp.git && cd speed-checkers-dapp`
