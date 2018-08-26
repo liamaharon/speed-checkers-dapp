@@ -1,11 +1,14 @@
 pragma solidity ^0.4.24;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 /** @title Variation on the classic checkers game 
   * https://github.com/liamaharon/quick-checkers-dapp
   */
 contract QuickCheckers is Ownable {
+    using SafeMath for uint;
+
     enum PlayerColor { Red, Black }
 
     enum GameState {
@@ -42,12 +45,19 @@ contract QuickCheckers is Ownable {
         require(gameList[gameIndex].state == GameState.WaitingForPlayer, "Game must be in state WaitingForPlayer");
         _;
     }
+
     modifier isUnderway(uint gameIndex) {
         require(gameList[gameIndex].state == GameState.Underway, "Game must be in state Underway");
         _;
     }
+
     modifier isPendingWithdrawal(uint gameIndex) {
         require(gameList[gameIndex].state == GameState.PendingWithdrawal, "Game must be in state PendingWithdrawal");
+        _;
+    }
+
+    modifier isntFinished(uint gameIndex) {
+        require(gameList[gameIndex].state != GameState.Finished, "Game isn't finished");
         _;
     }
 
@@ -173,7 +183,7 @@ contract QuickCheckers is Ownable {
         isWinner(gameIndex)
     {
         gameList[gameIndex].state = GameState.Finished;
-        msg.sender.transfer(gameList[gameIndex].wager * 2);
+        msg.sender.transfer(gameList[gameIndex].wager.mul(2));
     }
 
 
@@ -191,6 +201,7 @@ contract QuickCheckers is Ownable {
       */
     function emergencyWithdrawal(uint gameIndex)
         public
+        isntFinished(gameIndex)
         isEmergency
     {
         Game storage game = gameList[gameIndex];
