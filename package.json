@@ -77,7 +77,7 @@
     "start": "node scripts/start.js",
     "build": "truffle compile && node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "chain": "ganache-cli -b 3",
+    "chain": "ganache-cli",
     "prepare": "npm run build"
   },
   "jest": {
