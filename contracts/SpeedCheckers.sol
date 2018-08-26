@@ -237,6 +237,9 @@ contract SpeedCheckers is Ownable {
         pure 
         returns(uint8 enemyTileX, uint8 enemyTileY) 
     {
+        // Player must have piece on square they claim
+        require(board[pieceY][pieceX] == (color == PlayerColor.Red ? SquareState.Red : SquareState.Black), "Invalid move"); 
+
         // Destination cannot be occupied
         require(board[destY][destX] == SquareState.Empty, "Invalid move");
 
