@@ -1,4 +1,4 @@
-import QuickCheckers from '../build/contracts/QuickCheckers.json';
+import SpeedCheckers from '../build/contracts/SpeedCheckers.json';
 
 const drizzleOptions = {
   web3: {
@@ -9,7 +9,7 @@ const drizzleOptions = {
     },
   },
   contracts: [
-    QuickCheckers,
+    SpeedCheckers,
   ],
   polls: {
     accounts: 1500,

@@ -1,5 +1,5 @@
-var QuickCheckers = artifacts.require("QuickCheckers");
+var SpeedCheckers = artifacts.require("SpeedCheckers");
 
 module.exports = function(deployer) {
-  deployer.deploy(QuickCheckers);
+  deployer.deploy(SpeedCheckers);
 };

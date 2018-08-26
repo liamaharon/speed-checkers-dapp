@@ -10,7 +10,7 @@ import { weiToEther, etherToWei } from '../../util/ethereum';
 import {
   OuterWrapper, Header, AccWrapper, Balance, Body, BodyCol,
 } from './style';
-import { parseGame } from '../../util/quickCheckers';
+import { parseGame } from '../../util/speedCheckers';
 import Game from '../../components/Game';
 import Row from '../../components/Row';
 
@@ -18,8 +18,8 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
   constructor(props, context) {
     super(props);
     this.state = { games: [], wagerInput: 0 };
-    this.QuickCheckers = context.drizzle.contracts.QuickCheckers;
-    this.gameListLenKey = this.QuickCheckers.methods.gameListLen.cacheCall();
+    this.SpeedCheckers = context.drizzle.contracts.SpeedCheckers;
+    this.gameListLenKey = this.SpeedCheckers.methods.gameListLen.cacheCall();
     this.newGame = this.newGame.bind(this);
     this.joinGame = this.joinGame.bind(this);
     this.withdraw = this.withdraw.bind(this);
@@ -28,7 +28,7 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
   }
 
   componentWillUpdate(nextProps) {
-    const { QuickCheckers, accounts } = this.props;
+    const { SpeedCheckers, accounts } = this.props;
     // on account change reload the page to enforce metamask will use the
     // correct acc to sign txns
     if (accounts[0] !== nextProps.accounts[0]) {
@@ -37,23 +37,23 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
 
     // as soon as we get the game list length, request the game and board info
     // save keys to access this info from props in state
-    // console.log(QuickCheckers);
+    // console.log(SpeedCheckers);
     if
     (
-      (!QuickCheckers.gameListLen[this.gameListLenKey]
-      && nextProps.QuickCheckers.gameListLen[this.gameListLenKey])
-      || (QuickCheckers.gameListLen[this.gameListLenKey]
-      && (QuickCheckers.gameListLen[this.gameListLenKey].value
-        !== nextProps.QuickCheckers.gameListLen[this.gameListLenKey].value))
+      (!SpeedCheckers.gameListLen[this.gameListLenKey]
+      && nextProps.SpeedCheckers.gameListLen[this.gameListLenKey])
+      || (SpeedCheckers.gameListLen[this.gameListLenKey]
+      && (SpeedCheckers.gameListLen[this.gameListLenKey].value
+        !== nextProps.SpeedCheckers.gameListLen[this.gameListLenKey].value))
     ) {
       const gameListLen = parseInt(
-        nextProps.QuickCheckers.gameListLen[this.gameListLenKey].value,
+        nextProps.SpeedCheckers.gameListLen[this.gameListLenKey].value,
         10,
       );
       const newGames = [];
       for (let i = gameListLen - 1; i >= 0; i -= 1) {
-        const curGameKey = this.QuickCheckers.methods.gameList.cacheCall(i);
-        const curBoardKey = this.QuickCheckers.methods.getGameBoard.cacheCall(i);
+        const curGameKey = this.SpeedCheckers.methods.gameList.cacheCall(i);
+        const curBoardKey = this.SpeedCheckers.methods.getGameBoard.cacheCall(i);
         newGames.push({ gameKey: curGameKey, boardKey: curBoardKey, index: i });
       }
       this.setState({ games: newGames }); // eslint-disable-line
@@ -62,19 +62,19 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
 
   newGame() {
     const { wagerInput } = this.state;
-    this.QuickCheckers.methods.newGame.cacheSend({ value: etherToWei(wagerInput) });
+    this.SpeedCheckers.methods.newGame.cacheSend({ value: etherToWei(wagerInput) });
   }
 
   joinGame(i, wager) {
-    this.QuickCheckers.methods.joinGame(i).send({ value: wager });
+    this.SpeedCheckers.methods.joinGame(i).send({ value: wager });
   }
 
   makeMove(i, fromX, fromY, destX, destY) {
-    this.QuickCheckers.methods.makeMove(i, fromX, fromY, destX, destY).send();
+    this.SpeedCheckers.methods.makeMove(i, fromX, fromY, destX, destY).send();
   }
 
   withdraw(i) {
-    this.QuickCheckers.methods.withdraw(i).send();
+    this.SpeedCheckers.methods.withdraw(i).send();
   }
 
   changeWager(e) {
@@ -83,9 +83,9 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
 
   render() {
     const { games, wagerInput } = this.state;
-    const { accounts, accountBalances, QuickCheckers } = this.props;
+    const { accounts, accountBalances, SpeedCheckers } = this.props;
     const balance = weiToEther(accountBalances[accounts[0]]);
-    if (!QuickCheckers.gameListLen[this.gameListLenKey]) {
+    if (!SpeedCheckers.gameListLen[this.gameListLenKey]) {
       return <Typography variant="display4">Synchronizing...</Typography>;
     }
 
@@ -93,9 +93,9 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
     const yourGames = [];
     games.forEach((game) => {
       const { gameKey, boardKey, index } = game;
-      if (!QuickCheckers.gameList[gameKey] || !QuickCheckers.getGameBoard[boardKey]) return;
-      const gameVal = QuickCheckers.gameList[gameKey].value;
-      const boardVal = QuickCheckers.getGameBoard[boardKey].value;
+      if (!SpeedCheckers.gameList[gameKey] || !SpeedCheckers.getGameBoard[boardKey]) return;
+      const gameVal = SpeedCheckers.gameList[gameKey].value;
+      const boardVal = SpeedCheckers.getGameBoard[boardKey].value;
       const parsedGame = parseGame(gameVal, boardVal, index);
       if (parsedGame.state === 'WaitingForPlayer') {
         waitingForPlayer.push({ ...parsedGame });
@@ -107,7 +107,7 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
       <OuterWrapper>
         <Header>
           <Typography variant="display3">
-            Quick Checkers
+            Speed Checkers
           </Typography>
           <AccWrapper>
             <Typography variant="display1">
@@ -206,7 +206,7 @@ export default Home;
 Home.propTypes = {
   accounts: PropTypes.objectOf(PropTypes.string).isRequired,
   accountBalances: PropTypes.objectOf(PropTypes.string).isRequired,
-  QuickCheckers: PropTypes.any.isRequired, // eslint-disable-line
+  SpeedCheckers: PropTypes.any.isRequired, // eslint-disable-line
 };
 
 Home.contextTypes = {

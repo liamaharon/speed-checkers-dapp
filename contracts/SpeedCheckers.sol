@@ -4,9 +4,9 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 
 /** @title Variation on the classic checkers game 
-  * https://github.com/liamaharon/quick-checkers-dapp
+  * https://github.com/liamaharon/speed-checkers-dapp
   */
-contract QuickCheckers is Ownable {
+contract SpeedCheckers is Ownable {
     using SafeMath for uint;
 
     enum PlayerColor { Red, Black }

@@ -5,7 +5,7 @@ import Home from './Home';
 const mapStateToProps = state => ({
   accounts: state.accounts,
   accountBalances: state.accountBalances,
-  QuickCheckers: state.contracts.QuickCheckers,
+  SpeedCheckers: state.contracts.SpeedCheckers,
   drizzleStatus: state.drizzleStatus,
 });
 
