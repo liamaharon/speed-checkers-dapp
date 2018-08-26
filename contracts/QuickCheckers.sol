@@ -313,4 +313,20 @@ contract QuickCheckers {
     function gameListLen() public view returns(uint) {
         return gameList.length;        
     }
+
+    /** @dev Returns the length of gameList 
+      * @return The length of gameList
+      */
+    function getGameBoard(uint gameIndex) public view returns(SquareState[64]) {
+        SquareState[8][8] storage board = gameList[gameIndex].board;
+        SquareState[64] memory returnBoard;
+        uint curIndex = 0;
+        for (uint i = 0; i<8; i++) {
+            for (uint j = 0; j<8; j++) {
+                returnBoard[curIndex] = board[i][j];
+                curIndex += 1;
+            }
+        }
+        return returnBoard;
+    }
 }
