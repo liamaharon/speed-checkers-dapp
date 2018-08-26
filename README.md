@@ -53,10 +53,16 @@ Visit `localhost:3000` and configure Metamask to read from `localhost:8545`
 
 ## Test
 
-### Fire up a local blockchain
+### Fire up a lightning fast local blockchain
 
-`npm run chain`
+`npm run chain:test`
 
 ### Run tests
 
 `truffle test`
+
+## Troubleshooting
+
+### My UI state isn't updating with new txns
+
+This can sometimes be an issue with Drizzle. Try restarting your browser. 
