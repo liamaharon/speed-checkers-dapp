@@ -1,7 +1,11 @@
 pragma solidity ^0.4.24;
 
-/** @title Variation on the classic checkers game */
-contract QuickCheckers {
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+
+/** @title Variation on the classic checkers game 
+  * https://github.com/liamaharon/quick-checkers-dapp
+  */
+contract QuickCheckers is Ownable {
     enum PlayerColor { Red, Black }
 
     enum GameState {
@@ -60,12 +64,6 @@ contract QuickCheckers {
         _;
     }
 
-    // Modifier to check if msg.sender is contract creator
-    modifier isOwner() {
-        require(msg.sender == owner, "Must be contract owner");
-        _;
-    }
-
     // Modifier to check that there hasn't been an emergency stop
     modifier isNoEmergency() {
         require(emergencyStop == false, "There has been an emergency stop");
@@ -91,10 +89,6 @@ contract QuickCheckers {
             revert("You're not a player in this game");
         }
         _;
-    }
-
-    constructor() public {
-        owner = msg.sender;
     }
 
     /** @dev Creates a new game of FastCheckers, appends it to gameList
@@ -187,7 +181,7 @@ contract QuickCheckers {
       */
     function activateEmergencyStop()
         public
-        isOwner
+        onlyOwner
     {
         emergencyStop = true;
     }
