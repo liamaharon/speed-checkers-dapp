@@ -5,13 +5,13 @@ export const OuterWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  margin: 2rem 10rem;
 `;
 
 export const Body = styled.div`
   display: flex;
   flex: 1;
   justify-content: space-between;
+  padding: 2rem 5rem;
 `;
 
 export const BodyCol = styled.div`
@@ -25,9 +25,10 @@ export const BodyCol = styled.div`
 export const Header = styled.div`
   display: flex;
   flex: 1;
+  background-color: lavender;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2rem;
+  padding: 2rem 5rem;
 `;
 
 export const AccWrapper = styled.div`
