@@ -19,6 +19,14 @@ If you're not already familiar with the rules of checkers, don't worry they're v
 
 ## Run locally
 
+### Requirements
+- nodejs (v8.0.0 or above)
+- npm
+- truffle
+- ganache-cli
+- A C++ compiler
+- Python 2
+
 ### Clone the repo
 
 `git clone git@github.com:liamaharon/speed-checkers-dapp.git && cd speed-checkers-dapp`
@@ -27,7 +35,7 @@ If you're not already familiar with the rules of checkers, don't worry they're v
 
 `npm install`
 
-### Fire up a development blockchain
+### Fire up a local blockchain
 
 `npm run chain`
 
@@ -41,4 +49,14 @@ If you're not already familiar with the rules of checkers, don't worry they're v
 
 ### Play around
 
-Visit `localhost:3000` and interact with the app using Metamask
+Visit `localhost:3000` and configure Metamask to read from `localhost:8545`
+
+## Test
+
+### Fire up a local blockchain
+
+`npm run chain`
+
+### Run tests
+
+`truffle test`
