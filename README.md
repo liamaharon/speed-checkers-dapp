@@ -53,9 +53,9 @@ Visit `localhost:3000` and configure Metamask to read from `localhost:8545`
 
 ## Test
 
-### Fire up a local blockchain
+### Fire up a lightning fast local blockchain
 
-`npm run chain`
+`npm run chain:test`
 
 ### Run tests
 
