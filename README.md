@@ -49,4 +49,4 @@ If you're not already familiar with the rules of checkers, don't worry they're v
 
 ### Play around
 
-Visit `localhost:3000` and interact with the app using Metamask
+Visit `localhost:3000` and configure Metamask to read from `localhost:8545`
