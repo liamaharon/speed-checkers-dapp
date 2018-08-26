@@ -35,7 +35,7 @@ If you're not already familiar with the rules of checkers, don't worry they're v
 
 `npm install`
 
-### Fire up a development blockchain
+### Fire up a local blockchain
 
 `npm run chain`
 
@@ -50,3 +50,13 @@ If you're not already familiar with the rules of checkers, don't worry they're v
 ### Play around
 
 Visit `localhost:3000` and configure Metamask to read from `localhost:8545`
+
+## Test
+
+### Fire up a local blockchain
+
+`npm run chain`
+
+### Run tests
+
+`npm run test`
