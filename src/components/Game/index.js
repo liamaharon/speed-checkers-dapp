@@ -30,31 +30,17 @@ const CustomTableCell = withStyles(() => ({
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    // hacky way to persist state between rerenders. don't do this
-    // in a production app
-    const { index } = this.props;
-    const rehydrate = JSON.parse(localStorage.getItem(`Game-${index}-state`));
-    if (typeof rehydrate.fromX !== 'undefined') {
-      this.state = rehydrate;
-    } else {
-      this.state = {
-        fromX: 0,
-        fromY: 0,
-        destX: 0,
-        destY: 0,
-        pickingFrom: true,
-        pickingDest: false,
-        pickedAllCords: false,
-      };
-    }
+    this.state = {
+      fromX: 0,
+      fromY: 0,
+      destX: 0,
+      destY: 0,
+      pickingFrom: true,
+      pickingDest: false,
+    };
     this.clickSquare = this.clickSquare.bind(this);
     this.resetFields = this.resetFields.bind(this);
     this.makeMove = this.makeMove.bind(this);
-  }
-
-  componentWillUnmount() {
-    const { index } = this.props;
-    localStorage.setItem(`Game-${index}-state`, JSON.stringify(this.state));
   }
 
   resetFields() {
@@ -117,6 +103,7 @@ class Game extends React.Component {
       joinGame,
       black,
       index,
+      withdraw,
     } = this.props;
     if (state === 'WaitingForPlayer') {
       const gameInitiator = playerAddress === red || playerAddress === black;
@@ -227,7 +214,7 @@ class Game extends React.Component {
               {
                 state === 'Underway'
               && (
-              <Col style={{ marginTop: '1rem' }}>
+              <Col style={{ marginTop: '1rem', flex: '1' }}>
                 <Typography variant="headline">
                   Make a move
                 </Typography>
@@ -277,12 +264,12 @@ class Game extends React.Component {
                 </Row>
               </Col>
               )}
-              <Col style={{ marginLeft: 'auto', marginTop: '1rem' }}>
+              <Col style={{ marginLeft: 'auto', flex: '1', marginTop: '1rem' }}>
                 <Typography variant="headline">
                   Claim winnings
                 </Typography>
                 <Button
-                  onClick={this.makeMove}
+                  onClick={withdraw}
                   variant="contained"
                   style={{ flex: '1' }}
                   color="secondary"
@@ -302,6 +289,7 @@ class Game extends React.Component {
 Game.defaultProps = {
   joinGame: () => {},
   makeMove: () => {},
+  withdraw: () => {},
 };
 
 Game.propTypes = {
@@ -316,6 +304,7 @@ Game.propTypes = {
   board: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
   joinGame: PropTypes.func,
   makeMove: PropTypes.func,
+  withdraw: PropTypes.func,
 };
 
 export default Game;

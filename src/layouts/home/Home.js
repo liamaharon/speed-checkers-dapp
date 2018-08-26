@@ -22,7 +22,7 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
     this.gameListLenKey = this.QuickCheckers.methods.gameListLen.cacheCall();
     this.newGame = this.newGame.bind(this);
     this.joinGame = this.joinGame.bind(this);
-    this.stop = this.stop.bind(this);
+    this.withdraw = this.withdraw.bind(this);
     this.changeWager = this.changeWager.bind(this);
     this.makeMove = this.makeMove.bind(this);
   }
@@ -73,8 +73,8 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
     this.QuickCheckers.methods.makeMove(i, fromX, fromY, destX, destY).send();
   }
 
-  stop() {
-    this.QuickCheckers.methods.activateEmergencyStop().send();
+  withdraw(i) {
+    this.QuickCheckers.methods.withdraw(i).send();
   }
 
   changeWager(e) {
@@ -86,7 +86,7 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
     const { accounts, accountBalances, QuickCheckers } = this.props;
     const balance = weiToEther(accountBalances[accounts[0]]);
     if (!QuickCheckers.gameListLen[this.gameListLenKey]) {
-      return <Typography variant="display4">Syncing...</Typography>;
+      return <Typography variant="display4">Synchronizing...</Typography>;
     }
 
     const waitingForPlayer = [];
@@ -132,6 +132,7 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
               yourGames.map(game => (
                 <Game
                   key={game.index}
+                  withdraw={() => this.withdraw(game.index)}
                   makeMove={
                     (fromX, fromY, destX, destY) => this.makeMove(
                       game.index,

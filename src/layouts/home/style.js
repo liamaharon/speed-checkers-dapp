@@ -25,7 +25,7 @@ export const BodyCol = styled.div`
 export const Header = styled.div`
   display: flex;
   flex: 1;
-  background-color: lavender;
+background-color: lavender;
   align-items: center;
   justify-content: space-between;
   padding: 2rem 5rem;
