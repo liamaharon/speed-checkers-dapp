@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import uuid from 'uuid/v4';
 // import { ContractData } from 'drizzle-react-components';
 import Typography from '@material-ui/core/Typography';
 import {
   Button, FormControl, InputLabel, Input,
 } from '@material-ui/core';
-import { parseEthBalance, etherToWei } from '../../util/ethereum';
+import { weiToEther, etherToWei } from '../../util/ethereum';
 
 import {
   OuterWrapper, Header, AccWrapper, Balance, Body, BodyCol, Row,
 } from './style';
 import { parseGame } from '../../util/quickCheckers';
+import Game from '../../components/Game';
 
 class Home extends Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props, context) {
@@ -71,7 +73,7 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
   render() {
     const { games, wagerInput } = this.state;
     const { accounts, accountBalances, QuickCheckers } = this.props;
-    const balance = parseEthBalance(accountBalances[accounts[0]]);
+    const balance = weiToEther(accountBalances[accounts[0]]);
     if (!QuickCheckers.gameListLen[this.gameListLenKey]) {
       return <Typography variant="display4">Syncing...</Typography>;
     }
@@ -117,7 +119,7 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
               Your games
             </Typography>
             {
-              yourGames.map(game => <h2>{game.wager}</h2>)
+              yourGames.map(game => <Game key={uuid()} {...game} playerAddress={accounts[0]} />)
             }
           </BodyCol>
           <BodyCol>

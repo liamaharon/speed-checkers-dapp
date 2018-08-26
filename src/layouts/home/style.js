@@ -15,6 +15,8 @@ export const Body = styled.div`
 
 export const BodyCol = styled.div`
   display: flex;
+  flex: 1;
+  margin: 1rem;
   flex-direction: column;
 `;
 
