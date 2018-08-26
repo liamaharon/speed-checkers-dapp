@@ -1,5 +1,6 @@
 const BigNumber = require('bignumber.js');
 
+// helper function to assert that a SC call threw
 const expectThrow = async (promise) => {
   try {
     await promise;
@@ -15,6 +16,12 @@ const expectThrow = async (promise) => {
 
 const SpeedCheckers = artifacts.require('./contracts/SpeedCheckers.sol');
 
+/* Testing the core logic of the dapp:
+    - newGame
+    - joinGame
+    - makeMove
+    - withdraw
+ */
 contract('SpeedCheckers', (accounts) => {
   let speedCheckers;
   beforeEach('setup contract for each test', async () => {
