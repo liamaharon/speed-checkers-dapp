@@ -9,10 +9,11 @@ import {
 import { weiToEther, etherToWei } from '../../util/ethereum';
 
 import {
-  OuterWrapper, Header, AccWrapper, Balance, Body, BodyCol, Row,
+  OuterWrapper, Header, AccWrapper, Balance, Body, BodyCol,
 } from './style';
 import { parseGame } from '../../util/quickCheckers';
 import Game from '../../components/Game';
+import Row from '../../components/Row';
 
 class Home extends Component { // eslint-disable-line react/prefer-stateless-function
   constructor(props, context) {
@@ -58,8 +59,8 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
     this.QuickCheckers.methods.newGame.cacheSend({ value: etherToWei(wagerInput) });
   }
 
-  joinGame(i) {
-    this.QuickCheckers.methods.joinGame(i).send();
+  joinGame(i, wager) {
+    this.QuickCheckers.methods.joinGame(i).send({ value: wager });
   }
 
   stop() {
@@ -78,19 +79,18 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
       return <Typography variant="display4">Syncing...</Typography>;
     }
 
-    const waitingForPlayers = [];
+    const waitingForPlayer = [];
     const yourGames = [];
-    games.forEach((game) => {
+    games.forEach((game, i) => {
       const { gameKey, boardKey } = game;
       if (!QuickCheckers.gameList[gameKey] || !QuickCheckers.getGameBoard[boardKey]) return;
       const gameVal = QuickCheckers.gameList[gameKey].value;
       const boardVal = QuickCheckers.getGameBoard[boardKey].value;
       const parsedGame = parseGame(gameVal, boardVal);
-      if (parsedGame.state === 'WaitingForPlayers') {
-        waitingForPlayers.push(parsedGame);
-      }
-      if (parsedGame.red === accounts[0] || parsedGame.black === accounts[0]) {
-        yourGames.push(parsedGame);
+      if (parsedGame.state === 'WaitingForPlayer') {
+        waitingForPlayer.push({ i, ...parsedGame });
+      } else if (parsedGame.red === accounts[0] || parsedGame.black === accounts[0]) {
+        yourGames.push({ i, ...parsedGame });
       }
     });
     return (
@@ -116,13 +116,19 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
         <Body>
           <BodyCol>
             <Typography variant="display1">
-              Your games
+              Your commenced games
             </Typography>
             {
-              yourGames.map(game => <Game key={uuid()} {...game} playerAddress={accounts[0]} />)
+              yourGames.map(game => (
+                <Game
+                  key={uuid()}
+                  {...game}
+                  playerAddress={accounts[0]}
+                />
+              ))
             }
           </BodyCol>
-          <BodyCol>
+          <BodyCol style={{ maxWidth: '30rem' }}>
             <Typography variant="display1">
               Games awaiting players
             </Typography>
@@ -144,6 +150,16 @@ class Home extends Component { // eslint-disable-line react/prefer-stateless-fun
               + Create game
               </Button>
             </Row>
+            {
+              waitingForPlayer.map(game => (
+                <Game
+                  joinGame={() => this.joinGame(game.i, game.wager)}
+                  key={uuid()}
+                  {...game}
+                  playerAddress={accounts[0]}
+                />
+              ))
+            }
           </BodyCol>
         </Body>
       </OuterWrapper>

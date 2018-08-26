@@ -9,7 +9,3 @@ export const Wrapper = styled.div`
   flex-direction: column;
   padding: 1rem;
 `;
-
-export const Info = styled.div`
-  display: flex;
-`;

@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid/v4';
 import {
-  Paper, Typography, Table, TableRow, TableCell, TableBody, TableHead,
+  Paper, Typography, Table, TableRow, TableCell, TableBody, TableHead, Button,
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import {
-  OuterMargin, Wrapper, Info,
+  OuterMargin, Wrapper,
 } from './style';
 import { weiToEther } from '../../util/ethereum';
+import Row from '../Row';
 
 const CustomTableCell = withStyles(() => ({
   head: {
@@ -25,19 +26,32 @@ const CustomTableCell = withStyles(() => ({
 
 const Game = (props) => {
   const {
-    state, turn, wager, playerAddress, red, board,
+    state, turn, wager, playerAddress, red, board, joinGame, black,
   } = props;
   if (state === 'WaitingForPlayer') {
+    const gameInitiator = playerAddress === red || playerAddress === black;
     return (
       <OuterMargin>
         <Paper>
           <Wrapper>
-            <Info>
+            <Row>
               <Typography variant="title">{`State: ${state}`}</Typography>
-            </Info>
-            <Info>
+            </Row>
+            <Row>
               <Typography variant="subheading">{`Wager: ${weiToEther(wager)} ETH`}</Typography>
-            </Info>
+            </Row>
+            <Button
+              variant="contained"
+              disabled={gameInitiator}
+              color="secondary"
+              onClick={joinGame}
+            >
+              Join Game
+            </Button>
+            {
+              gameInitiator
+              && <Typography variant="caption">{"You can't join your own game"}</Typography> // eslint-disable-line react/jsx-curly-brace-presence
+            }
           </Wrapper>
         </Paper>
       </OuterMargin>
@@ -50,15 +64,15 @@ const Game = (props) => {
     <OuterMargin>
       <Paper>
         <Wrapper>
-          <Info>
+          <Row>
             <Typography variant="title">{`State: ${state}`}</Typography>
-          </Info>
-          <Info>
+          </Row>
+          <Row>
             <Typography variant="subheading">{`Turn: ${turn} (You are ${playerColor})`}</Typography>
-          </Info>
-          <Info>
+          </Row>
+          <Row>
             <Typography variant="subheading">{`Wager: ${weiToEther(wager)} ETH`}</Typography>
-          </Info>
+          </Row>
           <Table>
             <TableHead>
               <TableRow>
@@ -97,15 +111,20 @@ const Game = (props) => {
   );
 };
 
+Game.defaultProps = {
+  joinGame: () => {},
+};
+
 Game.propTypes = {
   turn: PropTypes.string.isRequired,
   // winner: PropTypes.string.isRequired,
   red: PropTypes.string.isRequired,
-  // black: PropTypes.string.isRequired,
+  black: PropTypes.string.isRequired,
   state: PropTypes.string.isRequired,
   wager: PropTypes.string.isRequired,
   playerAddress: PropTypes.string.isRequired,
   board: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)).isRequired,
+  joinGame: PropTypes.func,
 };
 
 export default Game;

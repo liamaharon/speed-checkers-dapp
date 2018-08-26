@@ -28,10 +28,6 @@ export const Header = styled.div`
   margin-bottom: 2rem;
 `;
 
-export const Row = styled.div`
-  display: flex;
-`;
-
 export const AccWrapper = styled.div`
   display: flex;
   flex-direction: column;

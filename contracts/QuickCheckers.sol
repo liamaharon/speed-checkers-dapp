@@ -53,6 +53,13 @@ contract QuickCheckers {
         _;
     }
 
+    // Modifer to check if the sender is in the game
+    modifier isNotInGame(uint gameIndex) {
+        Game storage game = gameList[gameIndex];
+        require((game.red != msg.sender && game.black != msg.sender), "You're already playing in this game");
+        _;
+    }
+
     // Modifier to check if msg.sender is contract creator
     modifier isOwner() {
         require(msg.sender == owner, "Must be contract owner");
@@ -124,6 +131,7 @@ contract QuickCheckers {
         public
         payable
         isNoEmergency
+        isNotInGame(gameIndex)
         isWaitingForPlayer(gameIndex)
     {
         Game storage game = gameList[gameIndex];
