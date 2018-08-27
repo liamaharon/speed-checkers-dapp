@@ -1,6 +1,6 @@
 {
-  "name": "eth-checkers",
-  "version": "0.0.0",
+  "name": "speed-checkers-dapp",
+  "version": "0.0.1",
   "devDependencies": {
     "babel-plugin-styled-components": "^1.5.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
