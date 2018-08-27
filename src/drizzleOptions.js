@@ -11,6 +11,7 @@ const drizzleOptions = {
   contracts: [
     SpeedCheckers,
   ],
+  syncAlways: true,
   polls: {
     accounts: 1500,
   },
