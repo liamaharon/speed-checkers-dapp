@@ -66,3 +66,7 @@ Visit `localhost:3000` and configure Metamask to read from `localhost:8545`
 ### My UI state isn't updating with new txns
 
 This can sometimes be an issue with Drizzle. Try restarting your browser. 
+
+### Errors on `npm run start` or `truffle test`
+
+Double check you're running a version of nodejs >= 8.0.0.
